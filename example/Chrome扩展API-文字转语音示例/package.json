@@ -1,0 +1,28 @@
+{
+    "main": "index.html",
+    "name": "HelloWorld",
+    "nodejs": true,
+    "single-instance": true,
+    "window": {
+        "title": "HelloWorld",
+        "width": 800,
+        "height": 600,
+        "icon": "logo.png",
+        "position": "center",
+        "min_width": 0,
+        "min_height": 0,
+        "max_width": 0,
+        "max_height": 0,
+        "resizable": true,
+        "always_on_top": false,
+        "fullscreen": false,
+        "show_in_taskbar": true,
+        "frame": true,
+        "show": true,
+        "kiosk": false,
+        "transparent": false
+    },
+    "webkit": {
+        "plugin": false
+    }
+}

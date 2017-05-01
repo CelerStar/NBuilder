@@ -54,7 +54,7 @@
 			//}
 
 			var consoletext = document.getElementById("consoletext");
-			consoletext.value = consoletext.value + bufView;
+			consoletext.value = consoletext.value + receiceString;
 		};
 
 		/*
@@ -81,7 +81,7 @@
 		 */
 		var openCom = function() {
 			chrome.serial.connect('COM8', {
-				bitrate: 9600
+				bitrate: 115200
 			}, onConnect);
 		}
 
@@ -112,10 +112,30 @@
 		 */
 		var sendData = function() {
 
-			var buffer = new ArrayBuffer(2);
+			var buffer = new ArrayBuffer(1);
 			var dataView = new DataView(buffer);
 			dataView.setInt8(0, 0xaa);
-			dataView.setInt8(1, 0xbb);
+
+			//此处为发送字符串 上边注释为发送二进制 请自行选择
+			//var sendtext = document.getElementById("sendtext");
+			//sendtextvalue = sendtext.value;
+			//var buffer = convertStringToArrayBuffer(sendtextvalue);
+
+			chrome.serial.send(connectionId, buffer, function() {});
+		}
+
+		/*
+		 * 名称：发送数据
+		 * 输入：
+		 * 输出：
+		 * 描述：
+		 */
+		var sendDataa = function() {
+
+			var buffer = new ArrayBuffer(1);
+			var dataView = new DataView(buffer);
+
+			dataView.setInt8(0, 0x00);
 
 			//此处为发送字符串 上边注释为发送二进制 请自行选择
 			//var sendtext = document.getElementById("sendtext");
@@ -134,7 +154,8 @@
 		<textarea id="sendtext" style="width: 200px;height: 200px;"></textarea>
 		<br>
 		<input type="button" id="" onclick="sendData()" value="发送" />
-
+		<br>
+		<input type="button" id="" onclick="sendDataa()" value="关闭" />
 		<br>
 
 		<textarea id="consoletext" style="width: 200px;height: 200px;"></textarea>

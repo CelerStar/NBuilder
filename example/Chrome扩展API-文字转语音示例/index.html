@@ -1,0 +1,23 @@
+<html>
+
+	<head>
+		<meta charset="UTF-8" />
+		<title>Hello World</title>
+
+	</head>
+
+	<body>
+		<input type="button" name="speak" onclick="speak()" id="speak" value="语音" />
+	</body>
+	<script type="text/javascript">
+		var speak = function() {
+			chrome.tts.speak(
+				'Chrome 浏览器在 Windows（使用 SAPI 5）、Mac OS X 和 Chrome OS 上使用操作系统提供的语音合成功能提供原生支持。在所有平台上，用户都可以安装注册为替代语音引擎的扩展程序。！', {
+					'lang': 'zh-CN',
+					'rate': 1.5,
+					'pitch': 1.5
+				});
+		}
+	</script>
+
+</html>

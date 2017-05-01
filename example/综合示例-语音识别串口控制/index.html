@@ -1,0 +1,191 @@
+<html>
+
+	<head>
+		<meta charset="UTF-8" />
+		<title>语音识别</title>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			var iconv = require('iconv-lite');
+			var connectionId;
+
+			/*
+			 * 名称：二进制数组转字符串
+			 * 输入：
+			 * 输出：
+			 * 描述：
+			 */
+			function convertArrayBufferToString(buf) {
+				//转换为Uint8 
+				var bufView = new Uint8Array(buf);
+				var encodedString = String.fromCharCode.apply(null, bufView);
+				return iconv.decode(encodedString, 'gbk');
+			}
+
+			/*
+			 * 名称：字符串转二进制数组
+			 * 输入：
+			 * 输出：
+			 * 描述：
+			 */
+			var convertStringToArrayBuffer = function(str) {
+				var buf = new ArrayBuffer(str.length);
+				var bufView = new Uint8Array(buf);
+				for(var i = 0; i < str.length; i++) {
+					bufView[i] = str.charCodeAt(i);
+				}
+				return buf;
+			};
+
+			/*
+			 * 名称：接收数据
+			 * 输入：
+			 * 输出：info.data 为二进制数组  receiceString 为转换为字符串后的值
+			 * 描述：
+			 */
+			var onReceiveCallback = function(info) {
+				receiceString = convertArrayBufferToString(info.data);
+
+				//可转化为数值数组进行操作
+				//var bufView = new Uint8Array(info.data);
+				//for(var i = 0; i < bufView.length; i++) {
+				//	console.log(bufView[i]);
+				//}
+
+				var consoletext = document.getElementById("consoletext");
+				consoletext.value = consoletext.value + receiceString;
+			};
+
+			/*
+			 * 名称：选定COM口被打开
+			 * 输入：
+			 * 输出：
+			 * 描述：
+			 */
+			var onConnect = function(connectionInfo) {
+
+				//console.log(chrome.runtime.lastError, connectionInfo);
+				//alert(connectionInfo.toString());
+				chrome.serial.onReceive.addListener(onReceiveCallback);
+
+				connectionId = connectionInfo.connectionId;
+
+			};
+
+			/*
+			 * 名称：打开指定COM口
+			 * 输入：
+			 * 输出：
+			 * 描述：
+			 */
+			var openCom = function() {
+				chrome.serial.connect('COM8', {
+					bitrate: 115200
+				}, onConnect);
+			}
+
+			/*
+			 * 名称：列举所有COM口
+			 * 输入：
+			 * 输出：
+			 * 描述：
+			 */
+			var onGetDevices = function(ports) {
+				for(var i = 0; i < ports.length; i++) {
+					//console.log(ports[i].path);
+					alert(ports[i].path);
+
+				}
+			}
+
+			var listCom = function() {
+
+				chrome.serial.getDevices(onGetDevices);
+			}
+
+			/*
+			 * 名称：发送数据
+			 * 输入：
+			 * 输出：
+			 * 描述：
+			 */
+			var sendData = function() {
+
+				var buffer = new ArrayBuffer(1);
+				var dataView = new DataView(buffer);
+				dataView.setInt8(0, 0xaa);
+
+				//此处为发送字符串 上边注释为发送二进制 请自行选择
+				//var sendtext = document.getElementById("sendtext");
+				//sendtextvalue = sendtext.value;
+				//var buffer = convertStringToArrayBuffer(sendtextvalue);
+
+				chrome.serial.send(connectionId, buffer, function() {});
+			}
+
+			/*
+			 * 名称：发送数据
+			 * 输入：
+			 * 输出：
+			 * 描述：
+			 */
+			var sendDataa = function() {
+
+				var buffer = new ArrayBuffer(1);
+				var dataView = new DataView(buffer);
+
+				dataView.setInt8(0, 0x00);
+
+				//此处为发送字符串 上边注释为发送二进制 请自行选择
+				//var sendtext = document.getElementById("sendtext");
+				//sendtextvalue = sendtext.value;
+				//var buffer = convertStringToArrayBuffer(sendtextvalue);
+
+				chrome.serial.send(connectionId, buffer, function() {});
+			}
+
+			openCom();
+
+			var wordList = [
+				["小灵把灯打开", "x i ao l ing b a d eng d a k ai"],
+				["小灵把灯关闭", "x i ao l ing b a d eng g u an b i"],
+				["小灵退下吧", "x i ao l ing t ui x i a b a"],
+				["小灵今天天气怎么样", "x i ao l ing j in t i an t i an q i z en m e y ang"]
+			];
+
+			var voiceMessage = function(string) {
+				console.log(string);
+
+				switch(string) {
+					case "小灵把灯打开":
+						sendData();
+						chrome.tts.speak('灯已经打开');
+						break;
+
+					case "小灵把灯关闭":
+						sendDataa();
+						chrome.tts.speak('灯已经关闭');
+						break;
+
+					case "小灵退下吧":
+						chrome.tts.speak('那我走啦');
+						break;
+
+					case "小灵今天天气怎么样":
+						chrome.tts.speak('天气晴朗,风和日丽');
+						break;
+
+					default:
+						break;
+				}
+
+			}
+		</script>
+
+		<script src="js/voiceRecognition.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/audioRecorder.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/callbackManager.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+
+</html>
