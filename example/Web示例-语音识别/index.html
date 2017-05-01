@@ -1,0 +1,26 @@
+<html>
+
+	<head>
+		<meta charset="UTF-8"/>
+		<title>语音识别</title>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			var wordList = [
+				["小灵把灯打开", "x i ao l ing b a d eng d a k ai"],
+				["小灵把灯关闭", "x i ao l ing b a d eng g u an b i"]
+
+			];
+
+			var voiceMessage = function(string) {
+				console.log(string);
+			}
+		</script>
+
+		<script src="js/voiceRecognition.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/audioRecorder.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/callbackManager.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+
+</html>
